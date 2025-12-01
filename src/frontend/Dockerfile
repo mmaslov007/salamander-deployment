@@ -26,16 +26,15 @@ RUN npm run build
 FROM node:20-alpine AS runner
 
 # Set the environment variable for standalone output
-ENV NODE_ENV production
-ENV PORT 3000
+ENV NODE_ENV=production
+ENV PORT=3000
 
 # Next.js standalone output copies all required dependencies (node_modules)
 # into the .next/standalone folder, making the build image much smaller.
 WORKDIR /app
 
 # Copy the standalone output from the builder stage
-# /app/.next/standalone -> /app
-COPY --from=builder /app/.next/standalone /app/.next/standalone
+COPY --from=builder /app/.next/standalone ./
 # Copy the static assets and public directory
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
@@ -45,4 +44,4 @@ EXPOSE 3000
 
 # Start the Next.js production server
 # The entry point is the node server created in the standalone build output
-CMD ["node", ".next/standalone/server.js"]
+CMD ["node", "server.js"]
