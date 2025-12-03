@@ -10,7 +10,7 @@ export default function VideoChooserPage() {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const res = await fetch('http://localhost:3000/videos');
+        const res = await fetch('http://localhost:3001/videos');
         const data = await res.json();
         setVideos(data);
       } catch (error) {
