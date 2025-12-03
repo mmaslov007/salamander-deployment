@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+    depends_on:
+      - server
+
+  server:
+    build:
+      context: ./centroid-finder/server
+    ports:
+      - "3001:3000"
+    environment:
+      - PORT=3000
+      - RESULTS_DIR=/app/results
+      - VIDEO_DIR=/app/videos
+      - THUMBNAIL_DIR=/app/thumbnails
+      - JOBS_FILE=/app/jobs.json
+    volumes:
+      - ./centroid-finder/server/results:/app/results
+      - ./centroid-finder/server/videos:/app/videos
+      - ./centroid-finder/server/thumbnails:/app/thumbnails
+    depends_on:
+      - processor
+
+  processor:
+    build:
+      context: ./centroid-finder/processor
+    volumes:
+      - ./centroid-finder/server/results:/app/results
+      - ./centroid-finder/server/videos:/app/videos
+    restart: "no"
+
+volumes:
+  results:
+  videos:
+  thumbnails:
