@@ -128,12 +128,31 @@ const processVideo = async (req, res) => {
         threshold
     ];
 
-    // Run the JAR asynchronously
+    // Run the JAR asynchronously and capture output for debugging
     const javaProcess = spawn('java', args, {
-        detached: true,
-        stdio: 'ignore'
+        detached: false,
+        stdio: ['ignore', 'pipe', 'pipe']
     });
-    javaProcess.unref();  // Unreference the process
+
+    // Pipe stdout and stderr to server logs so we can see Java errors
+    if (javaProcess.stdout) {
+        javaProcess.stdout.on('data', (data) => {
+            console.log(`java stdout: ${data.toString()}`);
+        });
+    }
+    if (javaProcess.stderr) {
+        javaProcess.stderr.on('data', (data) => {
+            console.error(`java stderr: ${data.toString()}`);
+        });
+    }
+
+    javaProcess.on('error', (err) => {
+        console.error('Failed to start java process:', err);
+    });
+
+    javaProcess.on('exit', (code, signal) => {
+        console.log(`java process exited with code=${code} signal=${signal}`);
+    });
 
     // Poll for result file and check file size stability
     let lastSize = 0;
