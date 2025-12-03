@@ -14,7 +14,7 @@ export function withJobStatus(WrappedComponent) {
 
       const interval = setInterval(async () => {
         try {
-          const res = await fetch(`http://localhost:3000/process/${jobId}/status`);
+          const res = await fetch(`http://localhost:3001/process/${jobId}/status`);
           if (!res.ok) throw new Error("Failed to fetch status");
 
           const data = await res.json();
