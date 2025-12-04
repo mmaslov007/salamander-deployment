@@ -33,7 +33,7 @@ jobs:
           # Capture the exit code of the java command.
           exit_code=${PIPESTATUS[0]}
           if [ $exit_code -ne 0 ]; then
-            echo "❌ Unit tests failed with exit code $exit_code."
+            echo "Unit tests failed with exit code $exit_code."
             exit $exit_code
           fi
 
@@ -42,8 +42,8 @@ jobs:
           MIN_TESTS=15
 
           if [ "$TEST_COUNT" -lt "$MIN_TESTS" ]; then
-            echo "❌ Only $TEST_COUNT tests were run. At least $MIN_TESTS tests are required. Please write more unit tests"
+            echo "Only $TEST_COUNT tests were run. At least $MIN_TESTS tests are required. Please write more unit tests"
             exit 1
           fi
 
-          echo "✅ All unit tests passed and $TEST_COUNT tests were executed."
+          echo "All unit tests passed and $TEST_COUNT tests were executed."
