@@ -58,16 +58,58 @@ docker compose down
 
 See `.env` in `src/centroid-finder/` for configuration (paths, ports, etc.).
 
-## Deploy to VM
+## Testing
 
-For Ubuntu VM deployment, push the built images to a registry or build directly on the VM:
+### Run Tests Locally
+
+```bash
+# Java tests
+cd src/centroid-finder/processor && mvn test
+
+# Node.js backend tests
+cd src/centroid-finder/server && npm test
+
+# Cypress E2E tests (requires Docker running)
+cd src/frontend && npm run cypress:run
+```
+
+### Test Coverage
+
+- **Java Processor**: 45 unit tests covering image processing logic
+- **Node.js Backend**: 4 API integration tests
+- **Frontend E2E**: 6 Cypress end-to-end tests
+- **Total**: 55+ tests ensuring reliability
+
+## CI/CD Pipeline
+
+Automated workflows handle testing and deployment:
+
+- **Test Workflow**: Runs on push/PR to `main` or `dev` - executes all 55+ tests (Java, Node.js, E2E)
+- **Deploy Workflow**: Runs on push to `main` (after tests pass) - builds and deploys to VM
+
+### Setting Up Deployment
+
+To enable auto-deployment to your VM, add these GitHub Secrets (Settings → Secrets and variables → Actions):
+
+| Secret | Example |
+|--------|---------|
+| `VM_HOST` | `<your IP>` |
+| `VM_USER` | `<your username>` |
+| `VM_SSH_PRIVATE_KEY` | (your SSH private key) |
+| `VM_DEPLOY_PATH` | `/root/salamander-deployment` |
+
+Ensure your SSH public key is in `~/.ssh/authorized_keys` on the VM.
+
+### Manual Deployment
+
+To deploy manually to an Ubuntu VM:
 
 ```bash
 # On VM:
-git clone <repo>
-cd src/
+git clone https://github.com/HumaGitGud/salamander-deployment.git
+cd salamander-deployment/src
 docker compose build
 docker compose up -d
 ```
 
-Access via `http://<vm-ip>:3000`
+Then access at `http://<vm-ip>:3000`
