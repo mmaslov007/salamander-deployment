@@ -30,9 +30,6 @@ replay_pid*
 # vscode
 .vscode/
 
-# files
-*.mp4
-
 # node
 node_modules
 
